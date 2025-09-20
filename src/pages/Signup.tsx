@@ -31,43 +31,46 @@ const Signup = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Dummy signup - just simulate loading and redirect
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
     setIsLoading(false);
     toast.success('Account created successfully! Welcome to Ophelia AI!');
     
-    // Redirect to analytics dashboard
+    // Always redirect to analytics (dummy auth)
     setTimeout(() => {
       window.location.href = '/analytics';
-    }, 1000);
+    }, 500);
   };
 
   const handleSocialSignup = (provider: string) => {
-    toast.success(`Redirecting to ${provider}...`);
-    // Implement social auth here
+    toast.success('Creating your account...');
+    // Dummy social auth - direct redirect
+    setTimeout(() => {
+      window.location.href = '/analytics';
+    }, 800);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background via-accent-light/5 to-primary/5 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.5 }}
         >
-          <Card className="glass-card border-border/50">
-            <CardHeader className="text-center space-y-4">
+          <Card className="backdrop-blur-xl bg-card/80 border-border/20 shadow-2xl">
+            <CardHeader className="text-center space-y-6 pb-8">
               <div className="flex justify-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-primary">
-                  <Sparkles className="h-7 w-7 text-white" />
+                <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-primary shadow-lg">
+                  <Sparkles className="h-8 w-8 text-white" />
                 </div>
               </div>
               <div>
-                <CardTitle className="text-2xl font-bold">
+                <CardTitle className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
                   {t('auth.signup_title')}
                 </CardTitle>
-                <CardDescription className="text-muted-foreground mt-2">
+                <CardDescription className="text-muted-foreground mt-3 text-base">
                   Start your AI-powered marketing journey today
                 </CardDescription>
               </div>

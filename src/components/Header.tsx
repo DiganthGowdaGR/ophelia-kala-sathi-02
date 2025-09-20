@@ -25,16 +25,16 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full glass border-b border-border/50">
+    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-background/80 border-b border-border/20 shadow-soft">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link 
             to="/" 
-            className="flex items-center gap-2 transition-smooth hover:opacity-80"
+            className="flex items-center gap-3 transition-all duration-200 hover:scale-[1.02]"
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-primary">
-              <Sparkles className="h-5 w-5 text-white" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-primary shadow-soft">
+              <Sparkles className="h-6 w-6 text-white" />
             </div>
             <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
               Ophelia AI
