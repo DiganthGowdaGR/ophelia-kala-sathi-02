@@ -12,6 +12,7 @@ import Index from "./pages/Index";
 import Demo from "./pages/Demo";
 import Analytics from "./pages/Analytics";
 import SuccessStories from "./pages/SuccessStories";
+import Pricing from "./pages/Pricing";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
@@ -39,6 +40,7 @@ const App = () => (
               <Route path="/demo" element={<Demo />} />
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/success" element={<SuccessStories />} />
+              <Route path="/pricing" element={<Pricing />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
