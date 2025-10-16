@@ -25,18 +25,18 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-background/80 border-b border-border/20 shadow-soft">
+    <header className="sticky top-0 z-50 w-full glass border-b border-border/20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-20 items-center justify-between">
           {/* Logo */}
           <Link 
             to="/" 
-            className="flex items-center gap-3 transition-all duration-200 hover:scale-[1.02]"
+            className="flex items-center gap-3 transition-all duration-200 hover:scale-[1.02] group"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-primary shadow-soft">
-              <Sparkles className="h-6 w-6 text-white" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-primary glow group-hover:scale-110 transition-transform">
+              <Sparkles className="h-7 w-7 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
               Ophelia AI
             </span>
           </Link>
@@ -64,7 +64,7 @@ const Header = () => {
             </Link>
             <Button 
               onClick={handleSignupClick}
-              className="bg-gradient-primary hover:bg-gradient-primary/90 text-white shadow-soft"
+              className="bg-gradient-primary hover:opacity-90 text-white glow font-semibold"
             >
               {t('hero.cta_signup')}
             </Button>
