@@ -19,7 +19,7 @@ import {
 import { TrendingUp, Eye, Users, Heart, ShoppingCart, DollarSign, Instagram, Facebook, Twitter } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const Analytics = () => {
+const AnalyticsUpdated = () => {
   const { t } = useTranslation();
 
   // Mock analytics data
@@ -68,6 +68,22 @@ const Analytics = () => {
     { name: 'Apr', impressions: 22000, engagement: 2800, revenue: 42000 },
     { name: 'May', impressions: 25000, engagement: 3200, revenue: 45000 },
     { name: 'Jun', impressions: 24800, engagement: 3400, revenue: 45230 },
+  ];
+
+  // Performance Overview data with social media specific data
+  const performanceData = [
+    { month: 'Jan', Instagram: 4200, Facebook: 3100, Twitter: 2400 },
+    { month: 'Feb', Instagram: 5100, Facebook: 3800, Twitter: 2900 },
+    { month: 'Mar', Instagram: 4800, Facebook: 3600, Twitter: 2700 },
+    { month: 'Apr', Instagram: 6200, Facebook: 4200, Twitter: 3100 },
+    { month: 'May', Instagram: 5800, Facebook: 4000, Twitter: 2950 },
+    { month: 'Jun', Instagram: 7100, Facebook: 4800, Twitter: 3400 },
+    { month: 'Jul', Instagram: 6500, Facebook: 4500, Twitter: 3200 },
+    { month: 'Aug', Instagram: 7800, Facebook: 5200, Twitter: 3600 },
+    { month: 'Sep', Instagram: 7200, Facebook: 4900, Twitter: 3450 },
+    { month: 'Oct', Instagram: 8500, Facebook: 5600, Twitter: 3800 },
+    { month: 'Nov', Instagram: 8100, Facebook: 5400, Twitter: 3700 },
+    { month: 'Dec', Instagram: 9200, Facebook: 6100, Twitter: 4100 },
   ];
 
   const platformData = [
@@ -158,6 +174,82 @@ const Analytics = () => {
           ))}
         </div>
 
+        {/* Performance Overview - Social Media Colors */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <Card className="glass-card">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Performance Overview</CardTitle>
+                <div className="flex gap-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600"></div>
+                    <span>Instagram</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-blue-600"></div>
+                    <span>Facebook</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-cyan-500"></div>
+                    <span>Twitter</span>
+                  </div>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={performanceData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis 
+                      dataKey="month" 
+                      stroke="hsl(var(--muted-foreground))"
+                      fontSize={12}
+                    />
+                    <YAxis 
+                      stroke="hsl(var(--muted-foreground))"
+                      fontSize={12}
+                    />
+                    <Tooltip 
+                      contentStyle={{
+                        backgroundColor: 'hsl(var(--card))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px',
+                      }}
+                    />
+                    <Bar 
+                      dataKey="Instagram" 
+                      fill="url(#instagramGradient)" 
+                      radius={[8, 8, 0, 0]}
+                    />
+                    <Bar 
+                      dataKey="Facebook" 
+                      fill="#1877F2" 
+                      radius={[8, 8, 0, 0]}
+                    />
+                    <Bar 
+                      dataKey="Twitter" 
+                      fill="#1DA1F2" 
+                      radius={[8, 8, 0, 0]}
+                    />
+                    <defs>
+                      <linearGradient id="instagramGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#833AB4" />
+                        <stop offset="50%" stopColor="#C13584" />
+                        <stop offset="100%" stopColor="#E1306C" />
+                      </linearGradient>
+                    </defs>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
         {/* Charts Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -166,7 +258,7 @@ const Analytics = () => {
         >
           <Tabs defaultValue="performance" className="space-y-6">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="performance">Performance</TabsTrigger>
+              <TabsTrigger value="performance">Trends</TabsTrigger>
               <TabsTrigger value="platforms">{t('analytics.platforms')}</TabsTrigger>
               <TabsTrigger value="posts">{t('analytics.top_posts')}</TabsTrigger>
             </TabsList>
@@ -306,7 +398,7 @@ const Analytics = () => {
                 size="lg" 
                 variant="secondary"
                 className="bg-white text-primary hover:bg-white/90"
-                onClick={() => window.location.href = '/'}
+                onClick={() => window.location.href = '/demo'}
               >
                 Create New Content
               </Button>
@@ -318,4 +410,4 @@ const Analytics = () => {
   );
 };
 
-export default Analytics;
+export default AnalyticsUpdated;

@@ -444,7 +444,7 @@ const Index = () => {
               <Button
                 size="lg"
                 className="bg-white text-primary hover:bg-white/90 text-xl px-12 py-7 h-auto gap-3 font-bold rounded-full shadow-large"
-                onClick={() => window.location.href = '/signup'}
+                onClick={() => window.location.href = '/auth'}
               >
                 <Sparkles className="h-6 w-6" />
                 Get Started Free

@@ -10,11 +10,13 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Index from "./pages/Index";
 import Demo from "./pages/Demo";
+import DemoReal from "./pages/DemoReal";
 import Analytics from "./pages/Analytics";
 import SuccessStories from "./pages/SuccessStories";
 import Pricing from "./pages/Pricing";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,12 +39,14 @@ const App = () => (
           <main className="flex-1">
             <Routes>
               <Route path="/" element={<Index />} />
-              <Route path="/demo" element={<Demo />} />
+              <Route path="/demo" element={<DemoReal />} />
+              <Route path="/demo-preview" element={<Demo />} />
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/success" element={<SuccessStories />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/auth" element={<Auth />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

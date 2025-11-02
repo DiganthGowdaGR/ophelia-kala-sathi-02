@@ -20,7 +20,7 @@ const Header = () => {
   ];
 
   const handleSignupClick = () => {
-    navigate('/signup');
+    navigate('/auth');
     setIsMenuOpen(false);
   };
 
