@@ -18,6 +18,7 @@ const DemoReal = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [artisanName, setArtisanName] = useState('');
   const [craftDescription, setCraftDescription] = useState('');
@@ -30,6 +31,7 @@ const DemoReal = () => {
         navigate('/auth');
       } else {
         setUser(session.user);
+        loadUserRole(session.user.id);
       }
     });
 
@@ -38,11 +40,28 @@ const DemoReal = () => {
         navigate('/auth');
       } else {
         setUser(session.user);
+        loadUserRole(session.user.id);
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const loadUserRole = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', userId)
+        .single();
+
+      if (error) throw error;
+      setUserRole(data?.role || 'user');
+    } catch (error) {
+      console.error('Error loading role:', error);
+      setUserRole('user');
+    }
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -151,7 +170,7 @@ HASHTAGS: ${generatedContent.tags?.join(', ')}
           <div>
             <h1 className="text-2xl font-bold">AI Content Generator</h1>
             <p className="text-sm text-muted-foreground">
-              Welcome, {user?.email}
+              Welcome, {user?.email} {userRole && `(${userRole.charAt(0).toUpperCase() + userRole.slice(1)})`}
             </p>
           </div>
           <div className="flex gap-2">
@@ -169,6 +188,18 @@ HASHTAGS: ${generatedContent.tags?.join(', ')}
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {userRole === 'seller' && (
+          <Card className="glass-card mb-8 border-primary/20">
+            <CardContent className="py-4">
+              <div className="flex items-center gap-3">
+                <Badge variant="secondary" className="text-sm">Seller Account</Badge>
+                <p className="text-sm text-muted-foreground">
+                  You have access to advanced features for managing multiple artisan profiles
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
         <div className="max-w-6xl mx-auto space-y-8">
           {/* Input Form */}
           <motion.div

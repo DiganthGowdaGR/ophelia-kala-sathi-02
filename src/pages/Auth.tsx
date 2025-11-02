@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
@@ -14,6 +15,7 @@ const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [role, setRole] = useState<'user' | 'seller'>('user');
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -40,7 +42,7 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -52,6 +54,20 @@ const Auth = () => {
       });
 
       if (error) throw error;
+
+      // Create role record for the new user
+      if (data.user) {
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert({
+            user_id: data.user.id,
+            role: role,
+          });
+
+        if (roleError) {
+          console.error('Error creating role:', roleError);
+        }
+      }
 
       toast({
         title: 'Success!',
@@ -268,6 +284,22 @@ const Auth = () => {
                       disabled={isLoading}
                       minLength={6}
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="role">Account Type</Label>
+                    <Select
+                      value={role}
+                      onValueChange={(value: 'user' | 'seller') => setRole(value)}
+                      disabled={isLoading}
+                    >
+                      <SelectTrigger id="role">
+                        <SelectValue placeholder="Select account type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="user">User - Create content for myself</SelectItem>
+                        <SelectItem value="seller">Seller - Manage multiple artisans</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <Button
                     type="submit"
