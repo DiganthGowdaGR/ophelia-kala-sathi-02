@@ -7,9 +7,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Share, Save, Sparkles, Instagram, Facebook, Twitter, RefreshCw } from 'lucide-react';
+import { Share, Save, Sparkles, Instagram, Facebook, Twitter, RefreshCw, Copy, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
+import { useToast } from '@/hooks/use-toast';
 
 interface ReviewModalProps {
   open: boolean;
@@ -30,8 +31,57 @@ interface ReviewModalProps {
 
 const ReviewModal = ({ open, onOpenChange, content, mediaPreview }: ReviewModalProps) => {
   const { t } = useTranslation();
+  const { toast: shadToast } = useToast();
   const [isPosting, setIsPosting] = useState(false);
   const [isImproving, setIsImproving] = useState(false);
+
+  const copyToClipboard = (text: string, label: string) => {
+    navigator.clipboard.writeText(text);
+    shadToast({
+      title: 'Copied!',
+      description: `${label} copied to clipboard`,
+    });
+  };
+
+  const downloadContent = () => {
+    if (!content) return;
+    
+    const textContent = `
+BRAND STORY
+${content.story}
+
+INSTAGRAM CAPTION
+${content.captions.instagram}
+
+FACEBOOK CAPTION
+${content.captions.facebook}
+
+TWITTER CAPTION
+${content.captions.twitter}
+
+REEL SCRIPT
+${content.reelScript}
+
+SUGGESTED PRICE
+${content.suggestedPrice}
+
+TAGS
+${content.tags.map(tag => `#${tag}`).join(' ')}
+    `.trim();
+
+    const blob = new Blob([textContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'artisan_content.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    shadToast({
+      title: 'Downloaded',
+      description: 'Content saved to file',
+    });
+  };
 
   const handlePostNow = async () => {
     setIsPosting(true);
@@ -133,10 +183,19 @@ const ReviewModal = ({ open, onOpenChange, content, mediaPreview }: ReviewModalP
               <TabsContent value="story" className="space-y-4">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Sparkles className="h-5 w-5" />
-                      Brand Story
-                    </CardTitle>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="flex items-center gap-2">
+                        <Sparkles className="h-5 w-5" />
+                        Brand Story
+                      </CardTitle>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => copyToClipboard(content.story, 'Brand Story')}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </CardHeader>
                   <CardContent>
                     <ScrollArea className="h-48">
@@ -151,12 +210,21 @@ const ReviewModal = ({ open, onOpenChange, content, mediaPreview }: ReviewModalP
                   {Object.entries(content.captions).map(([platform, caption]) => (
                     <Card key={platform}>
                       <CardHeader className="pb-3">
-                        <CardTitle className="flex items-center gap-2 text-base">
-                          {platform === 'instagram' && <Instagram className="h-4 w-4" />}
-                          {platform === 'facebook' && <Facebook className="h-4 w-4" />}
-                          {platform === 'twitter' && <Twitter className="h-4 w-4" />}
-                          {platform.charAt(0).toUpperCase() + platform.slice(1)}
-                        </CardTitle>
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="flex items-center gap-2 text-base">
+                            {platform === 'instagram' && <Instagram className="h-4 w-4" />}
+                            {platform === 'facebook' && <Facebook className="h-4 w-4" />}
+                            {platform === 'twitter' && <Twitter className="h-4 w-4" />}
+                            {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                          </CardTitle>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => copyToClipboard(caption, `${platform} caption`)}
+                          >
+                            <Copy className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </CardHeader>
                       <CardContent>
                         <p className="text-sm">{caption}</p>
@@ -169,11 +237,20 @@ const ReviewModal = ({ open, onOpenChange, content, mediaPreview }: ReviewModalP
               <TabsContent value="reel" className="space-y-4">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Reel/Video Script</CardTitle>
+                    <div className="flex items-center justify-between">
+                      <CardTitle>Reel/Video Script</CardTitle>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => copyToClipboard(content.reelScript, 'Reel Script')}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </CardHeader>
                   <CardContent>
                     <ScrollArea className="h-48">
-                      <p className="text-sm leading-relaxed">{content.reelScript}</p>
+                      <p className="text-sm leading-relaxed whitespace-pre-line">{content.reelScript}</p>
                     </ScrollArea>
                   </CardContent>
                 </Card>
@@ -185,42 +262,53 @@ const ReviewModal = ({ open, onOpenChange, content, mediaPreview }: ReviewModalP
         <Separator className="my-6" />
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-end">
+        <div className="flex flex-col sm:flex-row gap-3 justify-between">
           <Button
             variant="outline"
-            onClick={handleImprove}
-            disabled={isImproving}
+            onClick={downloadContent}
             className="gap-2"
           >
-            {isImproving ? (
-              <RefreshCw className="h-4 w-4 animate-spin" />
-            ) : (
-              <Sparkles className="h-4 w-4" />
-            )}
-            {t('review.improve')}
+            <Download className="h-4 w-4" />
+            Download All
           </Button>
           
-          <Button
-            variant="outline"
-            onClick={handleDontPost}
-            className="gap-2"
-          >
-            <Save className="h-4 w-4" />
-            {t('review.dont_post')}
-          </Button>
-          
-          <Button
-            onClick={handlePostNow}
-            disabled={isPosting}
-            className="bg-gradient-primary hover:bg-gradient-primary/90 text-white gap-2"
-          >
-            {isPosting ? (
-              <RefreshCw className="h-4 w-4 animate-spin" />
-            ) : (
-              <Share className="h-4 w-4" />
-            )}
-            {t('review.post_now')}
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button
+              variant="outline"
+              onClick={handleImprove}
+              disabled={isImproving}
+              className="gap-2"
+            >
+              {isImproving ? (
+                <RefreshCw className="h-4 w-4 animate-spin" />
+              ) : (
+                <Sparkles className="h-4 w-4" />
+              )}
+              {t('review.improve')}
+            </Button>
+            
+            <Button
+              variant="outline"
+              onClick={handleDontPost}
+              className="gap-2"
+            >
+              <Save className="h-4 w-4" />
+              {t('review.dont_post')}
+            </Button>
+            
+            <Button
+              onClick={handlePostNow}
+              disabled={isPosting}
+              className="bg-gradient-primary hover:bg-gradient-primary/90 text-white gap-2"
+            >
+              {isPosting ? (
+                <RefreshCw className="h-4 w-4 animate-spin" />
+              ) : (
+                <Share className="h-4 w-4" />
+              )}
+              {t('review.post_now')}
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
