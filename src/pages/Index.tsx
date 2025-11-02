@@ -12,11 +12,15 @@ const Index = () => {
   const { t } = useTranslation();
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [generatedContent, setGeneratedContent] = useState<any>(null);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadPreview, setUploadPreview] = useState<string | null>(null);
 
   const handleUploadComplete = (result: any) => {
-    setGeneratedContent(result);
-    setShowReviewModal(true);
+    if (result.file) {
+      setUploadedFile(result.file);
+      setUploadPreview(result.preview);
+      setShowReviewModal(true);
+    }
   };
 
   const scrollToUpload = () => {
@@ -498,6 +502,8 @@ const Index = () => {
         onOpenChange={setShowReviewModal}
         content={generatedContent}
         mediaPreview={uploadPreview}
+        uploadedFile={uploadedFile}
+        onContentGenerated={setGeneratedContent}
       />
     </div>
   );

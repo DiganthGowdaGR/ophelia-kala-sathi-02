@@ -58,35 +58,9 @@ const UploadBox = ({ onUploadComplete }: UploadBoxProps) => {
     }
   };
 
-  const simulateUpload = async () => {
-    setIsUploading(true);
-    setUploadProgress(0);
-
-    // Simulate upload progress
-    for (let i = 0; i <= 100; i += 10) {
-      setUploadProgress(i);
-      await new Promise(resolve => setTimeout(resolve, 200));
-    }
-
-    // Simulate AI processing
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    // Mock AI response
-    const mockResult = {
-      story: "This beautiful handcrafted piece showcases the intricate artistry of traditional Indian craftsmanship. Each detail tells a story of generations of skill passed down through families, creating not just an object, but a piece of cultural heritage.",
-      captions: {
-        instagram: "✨ Handcrafted with love and tradition ✨ Each piece tells a unique story of Indian artistry #HandmadeIndia #TraditionalCraft #ArtisanMade",
-        facebook: "Discover the beauty of traditional Indian craftsmanship! This handcrafted piece represents hours of dedicated work and centuries of artistic tradition. Support local artisans and own a piece of history.",
-        twitter: "🎨 Pure artistry in every detail! Supporting Indian artisans means preserving our cultural heritage. #MadeInIndia #Handcraft"
-      },
-      reelScript: "Start with a close-up of skilled hands at work... Show the intricate process... Reveal the beautiful finished piece... End with proud artisan holding their creation.",
-      suggestedPrice: "₹2,500 - ₹4,500",
-      tags: ["handmade", "traditional", "indian-craft", "artisan", "heritage"]
-    };
-
-    setIsUploading(false);
-    onUploadComplete(mockResult);
-    toast.success(t('upload.processing'));
+  const handleGenerateClick = () => {
+    // Just notify parent that file is ready
+    onUploadComplete({ file: selectedFile, preview });
   };
 
   const removeFile = () => {
@@ -198,23 +172,13 @@ const UploadBox = ({ onUploadComplete }: UploadBoxProps) => {
               </Button>
             </div>
 
-            {isUploading ? (
-              <div className="space-y-3">
-                <div className="flex justify-between text-sm">
-                  <span>{t('upload.uploading')}</span>
-                  <span>{uploadProgress}%</span>
-                </div>
-                <Progress value={uploadProgress} className="h-2" />
-              </div>
-            ) : (
-              <Button 
-                onClick={simulateUpload}
-                className="w-full bg-gradient-primary hover:bg-gradient-primary/90 text-white"
-                size="lg"
-              >
-                Generate AI Content
-              </Button>
-            )}
+            <Button 
+              onClick={handleGenerateClick}
+              className="w-full bg-gradient-primary hover:bg-gradient-primary/90 text-white"
+              size="lg"
+            >
+              Continue to Generate Content
+            </Button>
           </div>
         )}
       </motion.div>

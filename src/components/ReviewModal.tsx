@@ -7,10 +7,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Share, Save, Sparkles, Instagram, Facebook, Twitter, RefreshCw, Copy, Download } from 'lucide-react';
+import { Share, Save, Sparkles, Instagram, Facebook, Twitter, RefreshCw, Copy, Download, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface ReviewModalProps {
   open: boolean;
@@ -27,13 +30,18 @@ interface ReviewModalProps {
     tags: string[];
   } | null;
   mediaPreview?: string;
+  uploadedFile?: File | null;
+  onContentGenerated?: (content: any) => void;
 }
 
-const ReviewModal = ({ open, onOpenChange, content, mediaPreview }: ReviewModalProps) => {
+const ReviewModal = ({ open, onOpenChange, content, mediaPreview, uploadedFile, onContentGenerated }: ReviewModalProps) => {
   const { t } = useTranslation();
   const { toast: shadToast } = useToast();
   const [isPosting, setIsPosting] = useState(false);
   const [isImproving, setIsImproving] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [email, setEmail] = useState('');
+  const [showEmailInput, setShowEmailInput] = useState(!content);
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
@@ -112,7 +120,69 @@ ${content.tags.map(tag => `#${tag}`).join(' ')}
     toast.success('Content improved! Check the updated version.');
   };
 
-  if (!content) return null;
+  const handleCreateAccountAndGenerate = async () => {
+    if (!email || !uploadedFile) {
+      toast.error('Please enter your email');
+      return;
+    }
+
+    setIsGenerating(true);
+
+    try {
+      // Auto-create account with email
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password: Math.random().toString(36).slice(-8) + 'Aa1!', // Random password
+        options: {
+          data: {
+            full_name: email.split('@')[0]
+          }
+        }
+      });
+
+      if (authError) throw authError;
+
+      // Create user role
+      if (authData.user) {
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert({
+            user_id: authData.user.id,
+            role: 'user'
+          });
+
+        if (roleError) console.error('Role creation error:', roleError);
+      }
+
+      // Convert file to base64 for AI analysis
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64 = e.target?.result as string;
+        
+        // Call generate-content edge function
+        const { data, error } = await supabase.functions.invoke('generate-content', {
+          body: {
+            imageBase64: base64,
+            generateImage: false
+          }
+        });
+
+        if (error) throw error;
+
+        onContentGenerated?.(data);
+        setShowEmailInput(false);
+        toast.success('Account created and content generated!');
+      };
+      
+      reader.readAsDataURL(uploadedFile);
+
+    } catch (error: any) {
+      console.error('Error:', error);
+      toast.error(error.message || 'Failed to create account');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -120,11 +190,59 @@ ${content.tags.map(tag => `#${tag}`).join(' ')}
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-primary" />
-            {t('review.title')}
+            {showEmailInput ? 'Create Account & Generate Content' : t('review.title')}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        {showEmailInput ? (
+          <div className="py-8 space-y-6">
+            <div className="text-center space-y-4">
+              {mediaPreview && (
+                <div className="w-32 h-32 mx-auto rounded-lg overflow-hidden">
+                  <img src={mediaPreview} alt="Preview" className="w-full h-full object-cover" />
+                </div>
+              )}
+              <p className="text-muted-foreground">
+                Enter your email to create an account and generate AI content for your craft
+              </p>
+            </div>
+
+            <div className="max-w-md mx-auto space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleCreateAccountAndGenerate()}
+                />
+              </div>
+
+              <Button
+                onClick={handleCreateAccountAndGenerate}
+                disabled={isGenerating || !email}
+                className="w-full bg-gradient-primary hover:bg-gradient-primary/90 text-white"
+                size="lg"
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                    Creating Account & Generating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-5 w-5 mr-2" />
+                    Create Account & Generate Content
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        ) : content && (
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
           {/* Media Preview */}
           <div className="space-y-4">
             <Card>
@@ -257,11 +375,11 @@ ${content.tags.map(tag => `#${tag}`).join(' ')}
               </TabsContent>
             </Tabs>
           </div>
-        </div>
+            </div>
 
-        <Separator className="my-6" />
+            <Separator className="my-6" />
 
-        {/* Action Buttons */}
+            {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 justify-between">
           <Button
             variant="outline"
@@ -310,6 +428,8 @@ ${content.tags.map(tag => `#${tag}`).join(' ')}
             </Button>
           </div>
         </div>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );
