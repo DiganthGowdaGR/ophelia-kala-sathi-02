@@ -11,6 +11,9 @@ import Footer from "./components/Footer";
 import Index from "./pages/Index";
 import Demo from "./pages/Demo";
 import DemoReal from "./pages/DemoReal";
+import History from './pages/History';
+import Profile from './pages/Profile';
+import Admin from './pages/Admin';
 import Analytics from "./pages/Analytics";
 import SuccessStories from "./pages/SuccessStories";
 import Pricing from "./pages/Pricing";
@@ -47,6 +50,9 @@ const App = () => (
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/history" element={<History />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/admin" element={<Admin />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

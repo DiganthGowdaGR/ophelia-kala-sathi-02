@@ -1,5 +1,6 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,126 +13,138 @@ serve(async (req) => {
   }
 
   try {
-    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
-    if (!GEMINI_API_KEY) {
-      throw new Error('GEMINI_API_KEY is not configured');
-    }
-
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    // Get user from auth header
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      throw new Error('No authorization header');
-    }
-
-    const { data: { user }, error: authError } = await supabase.auth.getUser(
-      authHeader.replace('Bearer ', '')
+    const { artisanName, craftDescription, generateImage } = await req.json();
+    
+    const authHeader = req.headers.get('Authorization')!;
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      { global: { headers: { Authorization: authHeader } } }
     );
 
-    if (authError || !user) {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) {
       throw new Error('Unauthorized');
     }
 
-    const { artisanName, craftDescription } = await req.json();
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY not configured');
+    }
 
-    console.log('Generating content for:', artisanName);
-
-    // Call Gemini API
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: `You are a marketing expert for artisans. Generate compelling marketing content for an artisan.
+    // Generate content with AI
+    const contentPrompt = `You are a marketing expert for artisan crafts. Generate compelling marketing content for the following artisan and their craft:
 
 Artisan Name: ${artisanName}
 Craft Description: ${craftDescription}
 
-Please provide:
-1. Brand Story (2-3 paragraphs, emotional and engaging)
-2. Instagram Caption (engaging, with emojis, 150 chars max)
-3. Facebook Caption (informative, 200 chars max)
-4. Twitter Caption (catchy, with hashtags, 280 chars max)
-5. Reel Script (30-second video script)
-6. Suggested Price Range (in USD)
-7. 5 relevant hashtags
+Please generate:
+1. A brand story (2-3 paragraphs)
+2. Instagram caption (with emojis, max 150 characters)
+3. Facebook post (engaging, max 200 characters)
+4. Twitter/X post (concise, max 280 characters)
+5. A 30-second reel script
+6. Suggested pricing in USD (just the number)
+7. 5 trending hashtags (without #)
 
-Format your response as JSON with these exact keys:
-{
-  "brandStory": "...",
-  "instagramCaption": "...",
-  "facebookCaption": "...",
-  "twitterCaption": "...",
-  "reelScript": "...",
-  "suggestedPrice": 150,
-  "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
-}`
-            }]
-          }]
-        })
-      }
-    );
+Format your response as JSON with these keys: brandStory, instagramCaption, facebookCaption, twitterCaption, reelScript, suggestedPrice, tags`;
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Gemini API error:', errorText);
-      throw new Error('Failed to generate content');
+    const contentResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: [
+          { role: 'user', content: contentPrompt }
+        ],
+      }),
+    });
+
+    if (!contentResponse.ok) {
+      const errorText = await contentResponse.text();
+      console.error('AI API error:', contentResponse.status, errorText);
+      throw new Error(`AI API error: ${contentResponse.status}`);
     }
 
-    const data = await response.json();
-    const generatedText = data.candidates[0].content.parts[0].text;
+    const contentData = await contentResponse.json();
+    const generatedText = contentData.choices[0].message.content;
     
     // Extract JSON from markdown code blocks if present
-    let jsonText = generatedText;
-    if (generatedText.includes('```json')) {
-      jsonText = generatedText.split('```json')[1].split('```')[0].trim();
-    } else if (generatedText.includes('```')) {
-      jsonText = generatedText.split('```')[1].split('```')[0].trim();
+    let contentJson;
+    try {
+      const jsonMatch = generatedText.match(/```json\n([\s\S]*?)\n```/) || 
+                       generatedText.match(/```\n([\s\S]*?)\n```/);
+      contentJson = JSON.parse(jsonMatch ? jsonMatch[1] : generatedText);
+    } catch (e) {
+      console.error('Failed to parse JSON:', generatedText);
+      throw new Error('Failed to parse AI response');
     }
-    
-    const content = JSON.parse(jsonText);
+
+    let imageUrl = null;
+
+    // Generate image if requested
+    if (generateImage) {
+      const imagePrompt = `Create a beautiful, professional product photo of ${craftDescription}. High quality, well-lit, artistic composition, suitable for e-commerce and social media marketing.`;
+      
+      const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash-image',
+          messages: [
+            { role: 'user', content: imagePrompt }
+          ],
+          modalities: ['image', 'text']
+        }),
+      });
+
+      if (imageResponse.ok) {
+        const imageData = await imageResponse.json();
+        imageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url || null;
+      } else {
+        console.error('Image generation failed:', await imageResponse.text());
+      }
+    }
 
     // Save to database
-    const { error: insertError } = await supabase
+    const { error: dbError } = await supabaseClient
       .from('artisan_content')
       .insert({
         user_id: user.id,
         artisan_name: artisanName,
         craft_description: craftDescription,
-        brand_story: content.brandStory,
-        instagram_caption: content.instagramCaption,
-        facebook_caption: content.facebookCaption,
-        twitter_caption: content.twitterCaption,
-        reel_script: content.reelScript,
-        suggested_price: content.suggestedPrice,
-        tags: content.tags
+        brand_story: contentJson.brandStory,
+        instagram_caption: contentJson.instagramCaption,
+        facebook_caption: contentJson.facebookCaption,
+        twitter_caption: contentJson.twitterCaption,
+        reel_script: contentJson.reelScript,
+        suggested_price: parseFloat(contentJson.suggestedPrice),
+        tags: contentJson.tags,
+        image_url: imageUrl,
       });
 
-    if (insertError) {
-      console.error('Database insert error:', insertError);
-      throw insertError;
+    if (dbError) {
+      console.error('Database error:', dbError);
+      throw new Error('Failed to save content');
     }
 
-    console.log('Content generated and saved successfully');
-
-    return new Response(JSON.stringify(content), {
+    return new Response(JSON.stringify({
+      ...contentJson,
+      imageUrl,
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
-
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in generate-content function:', error);
-    return new Response(
-      JSON.stringify({ error: error.message || 'Internal server error' }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    );
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   }
 });
