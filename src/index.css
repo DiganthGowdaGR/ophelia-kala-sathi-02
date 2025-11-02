@@ -59,11 +59,10 @@
                      radial-gradient(at 100% 100%, hsl(180 85% 55% / 0.3) 0px, transparent 50%),
                      radial-gradient(at 0% 100%, hsl(270 85% 65% / 0.3) 0px, transparent 50%);
 
-    /* Shadows with intense purple glow */
-    --shadow-soft: 0 4px 6px -1px hsl(0 0% 0% / 0.5), 0 2px 4px -1px hsl(270 85% 65% / 0.2);
-    --shadow-medium: 0 10px 15px -3px hsl(0 0% 0% / 0.6), 0 4px 6px -2px hsl(270 85% 65% / 0.3);
-    --shadow-large: 0 25px 50px -12px hsl(0 0% 0% / 0.7), 0 10px 30px -10px hsl(270 85% 65% / 0.4);
-    --shadow-glow: 0 0 60px hsl(270 85% 65% / 0.6), 0 0 100px hsl(270 85% 65% / 0.4);
+    /* Standard shadows - subtle and professional */
+    --shadow-soft: 0 2px 8px hsl(0 0% 0% / 0.15);
+    --shadow-medium: 0 4px 16px hsl(0 0% 0% / 0.25);
+    --shadow-large: 0 8px 32px hsl(0 0% 0% / 0.35);
     
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -123,10 +122,9 @@
                      radial-gradient(at 100% 100%, hsl(180 85% 55% / 0.3) 0px, transparent 50%),
                      radial-gradient(at 0% 100%, hsl(270 85% 65% / 0.3) 0px, transparent 50%);
 
-    --shadow-soft: 0 4px 6px -1px hsl(0 0% 0% / 0.5), 0 2px 4px -1px hsl(270 85% 65% / 0.2);
-    --shadow-medium: 0 10px 15px -3px hsl(0 0% 0% / 0.6), 0 4px 6px -2px hsl(270 85% 65% / 0.3);
-    --shadow-large: 0 25px 50px -12px hsl(0 0% 0% / 0.7), 0 10px 30px -10px hsl(270 85% 65% / 0.4);
-    --shadow-glow: 0 0 60px hsl(270 85% 65% / 0.6), 0 0 100px hsl(270 85% 65% / 0.4);
+    --shadow-soft: 0 2px 8px hsl(0 0% 0% / 0.15);
+    --shadow-medium: 0 4px 16px hsl(0 0% 0% / 0.25);
+    --shadow-large: 0 8px 32px hsl(0 0% 0% / 0.35);
 
     --sidebar-background: 270 30% 6%;
     --sidebar-foreground: 270 10% 96%;
@@ -200,13 +198,6 @@
     box-shadow: var(--shadow-soft);
   }
 
-  .glow {
-    box-shadow: var(--shadow-glow);
-  }
-
-  .text-glow {
-    text-shadow: 0 0 20px hsl(var(--primary) / 0.5), 0 0 40px hsl(var(--primary) / 0.3);
-  }
 
   .bg-grid-pattern {
     background-image: 
@@ -228,10 +219,8 @@
     box-shadow: var(--shadow-large);
   }
 
-  .neon-border {
-    border: 1px solid hsl(var(--primary) / 0.3);
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.3),
-                inset 0 0 20px hsl(var(--primary) / 0.1);
+  .standard-border {
+    border: 1px solid hsl(var(--border));
   }
 
   .blob {

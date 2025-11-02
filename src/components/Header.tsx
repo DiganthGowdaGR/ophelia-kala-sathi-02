@@ -25,7 +25,7 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full glass neon-border border-b">
+    <header className="sticky top-0 z-50 w-full glass standard-border border-b">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
@@ -33,7 +33,7 @@ const Header = () => {
             to="/" 
             className="flex items-center gap-3 transition-all duration-200 hover:scale-[1.02] group"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-primary glow group-hover:scale-110 transition-transform">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-primary group-hover:scale-110 transition-transform shadow-medium">
               <Sparkles className="h-7 w-7 text-white" />
             </div>
             <span className="text-2xl font-bold text-white">
@@ -58,13 +58,13 @@ const Header = () => {
           <div className="hidden md:flex items-center gap-4">
             <LanguageToggle />
             <Link to="/login">
-              <Button variant="outline" size="sm" className="glass neon-border text-white hover:bg-white/10 rounded-full">
+              <Button variant="outline" size="sm" className="glass standard-border text-white hover:bg-white/10 rounded-full">
                 {t('nav.login')}
               </Button>
             </Link>
             <Button 
               onClick={handleSignupClick}
-              className="bg-gradient-primary hover:opacity-90 text-white glow font-semibold rounded-full"
+              className="bg-gradient-primary hover:opacity-90 text-white font-semibold rounded-full shadow-medium"
             >
               {t('hero.cta_signup')}
             </Button>
@@ -77,7 +77,7 @@ const Header = () => {
               variant="outline"
               size="sm"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 glass neon-border text-white hover:bg-white/10"
+              className="p-2 glass standard-border text-white hover:bg-white/10"
             >
               {isMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </Button>

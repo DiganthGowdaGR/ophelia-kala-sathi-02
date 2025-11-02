@@ -47,14 +47,14 @@ const Index = () => {
               transition={{ duration: 0.8 }}
               className="space-y-8"
             >
-              <Badge className="inline-flex items-center gap-2 px-6 py-3 text-base glass-card neon-border">
-                <Sparkles className="h-5 w-5 text-primary animate-pulse" />
+              <Badge className="inline-flex items-center gap-2 px-6 py-3 text-base glass-card standard-border">
+                <Sparkles className="h-5 w-5 text-primary" />
                 <span className="font-medium">AI-Powered Marketing Revolution</span>
               </Badge>
               
               <h1 className="text-6xl sm:text-7xl lg:text-8xl font-bold text-white tracking-tight leading-[1.1]">
                 Revolutionizing the<br />
-                <span className="text-glow bg-gradient-primary bg-clip-text text-transparent">
+                <span className="bg-gradient-primary bg-clip-text text-transparent">
                   Future of Data Tracking
                 </span>
               </h1>
@@ -73,7 +73,7 @@ const Index = () => {
               <Button
                 size="lg"
                 onClick={scrollToUpload}
-                className="bg-gradient-primary hover:opacity-90 text-white glow text-lg px-12 py-7 h-auto gap-3 font-semibold rounded-full"
+                className="bg-gradient-primary hover:opacity-90 text-white text-lg px-12 py-7 h-auto gap-3 font-semibold rounded-full shadow-medium"
               >
                 Get Started
                 <ArrowRight className="h-6 w-6" />
@@ -82,7 +82,7 @@ const Index = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="glass neon-border text-white hover:bg-white/10 text-lg px-12 py-7 h-auto gap-3 font-semibold rounded-full"
+                className="glass standard-border text-white hover:bg-white/10 text-lg px-12 py-7 h-auto gap-3 font-semibold rounded-full"
                 onClick={() => window.location.href = '/demo'}
               >
                 <Play className="h-6 w-6" />
@@ -97,8 +97,7 @@ const Index = () => {
               transition={{ duration: 1, delay: 0.4 }}
               className="mt-20 relative"
             >
-              <div className="absolute inset-0 bg-gradient-primary opacity-20 blur-3xl" />
-              <div className="glass-card rounded-3xl p-1 shadow-large glow relative">
+              <div className="glass-card rounded-3xl p-1 shadow-large relative">
                 <div className="bg-card/80 backdrop-blur-xl rounded-3xl p-8 space-y-6">
                   {/* Dashboard Header */}
                   <div className="flex items-center justify-between pb-6 border-b border-border/50">
@@ -107,9 +106,9 @@ const Index = () => {
                       <p className="text-foreground/60">Pages / Dashboard</p>
                     </div>
                     <div className="flex gap-3">
-                      <div className="h-4 w-4 rounded-full bg-primary glow animate-pulse" />
-                      <div className="h-4 w-4 rounded-full bg-secondary glow animate-pulse delay-75" />
-                      <div className="h-4 w-4 rounded-full bg-accent glow animate-pulse delay-150" />
+                      <div className="h-4 w-4 rounded-full bg-primary" />
+                      <div className="h-4 w-4 rounded-full bg-secondary" />
+                      <div className="h-4 w-4 rounded-full bg-accent" />
                     </div>
                   </div>
                   
@@ -126,7 +125,7 @@ const Index = () => {
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.6 + i * 0.1 }}
-                        className="glass-card neon-border rounded-2xl p-6 space-y-3 card-hover"
+                        className="glass-card standard-border rounded-2xl p-6 space-y-3 card-hover"
                       >
                         <div className="flex items-center justify-between">
                           <div className={`p-3 rounded-xl bg-${stat.color}/20 text-${stat.color}`}>
@@ -142,33 +141,33 @@ const Index = () => {
                   
                   {/* Chart Preview */}
                   <div className="glass-card rounded-2xl p-8 space-y-6">
-                    <div className="flex items-center justify-between">
-                      <span className="text-white text-xl font-bold">Performance Overview</span>
-                      <div className="flex gap-6 text-sm">
-                        <span className="flex items-center gap-2">
-                          <div className="w-4 h-4 rounded-full bg-primary glow" />
-                          Instagram
-                        </span>
-                        <span className="flex items-center gap-2">
-                          <div className="w-4 h-4 rounded-full bg-secondary glow" />
-                          Facebook
-                        </span>
-                        <span className="flex items-center gap-2">
-                          <div className="w-4 h-4 rounded-full bg-accent glow" />
-                          Twitter
-                        </span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-white text-xl font-bold">Performance Overview</span>
+                        <div className="flex gap-6 text-sm">
+                          <span className="flex items-center gap-2">
+                            <div className="w-4 h-4 rounded-full bg-primary" />
+                            Instagram
+                          </span>
+                          <span className="flex items-center gap-2">
+                            <div className="w-4 h-4 rounded-full bg-secondary" />
+                            Facebook
+                          </span>
+                          <span className="flex items-center gap-2">
+                            <div className="w-4 h-4 rounded-full bg-accent" />
+                            Twitter
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="h-64 flex items-end gap-3">
-                      {[40, 65, 45, 80, 55, 90, 75, 60, 85, 70, 95, 80, 88, 92].map((height, i) => (
-                        <motion.div
-                          key={i}
-                          initial={{ height: 0 }}
-                          animate={{ height: `${height}%` }}
-                          transition={{ delay: 0.8 + i * 0.05, duration: 0.5 }}
-                          className="flex-1 bg-gradient-primary rounded-t-xl glow"
-                        />
-                      ))}
+                      <div className="h-64 flex items-end gap-3">
+                        {[40, 65, 45, 80, 55, 90, 75, 60, 85, 70, 95, 80, 88, 92].map((height, i) => (
+                          <motion.div
+                            key={i}
+                            initial={{ height: 0 }}
+                            animate={{ height: `${height}%` }}
+                            transition={{ delay: 0.8 + i * 0.05, duration: 0.5 }}
+                            className="flex-1 bg-gradient-primary rounded-t-xl"
+                          />
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -190,12 +189,12 @@ const Index = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <Badge className="inline-flex items-center gap-2 px-6 py-3 text-base glass-card neon-border mb-6">
+              <Badge className="inline-flex items-center gap-2 px-6 py-3 text-base glass-card standard-border mb-6">
                 <Zap className="h-5 w-5 text-primary" />
                 <span className="font-medium">Capabilities AI Tools</span>
               </Badge>
               <h2 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-foreground leading-tight">
-                Building <span className="text-glow bg-gradient-primary bg-clip-text text-transparent">AI solution</span>
+                Building <span className="bg-gradient-primary bg-clip-text text-transparent">AI solution</span>
               </h2>
               <p className="text-xl text-foreground/60 mt-8">
                 Our AI-powered plan of solutions empowers your craft business with data-driven insights
@@ -232,8 +231,7 @@ const Index = () => {
                 transition={{ duration: 0.6, delay: index * 0.15 }}
                 className="group relative"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} rounded-3xl blur-2xl opacity-50 group-hover:opacity-75 transition-opacity`} />
-                <div className="relative glass-card neon-border rounded-3xl p-8 text-center space-y-6 card-hover h-full">
+                <div className="relative glass-card standard-border rounded-3xl p-8 text-center space-y-6 card-hover h-full">
                   <div className="inline-flex p-4 rounded-2xl bg-gradient-primary">
                     <div className="text-white">
                       {feature.icon}
@@ -293,8 +291,7 @@ const Index = () => {
               transition={{ duration: 0.8 }}
               className="relative"
             >
-              <div className="absolute inset-0 bg-gradient-primary opacity-20 blur-3xl rounded-full" />
-              <div className="relative glass-card neon-border rounded-3xl p-12 text-center space-y-8">
+              <div className="relative glass-card standard-border rounded-3xl p-12 text-center space-y-8 shadow-large">
                 <div className="text-8xl mb-8">🎨</div>
                 <h3 className="text-4xl font-bold text-white">Intelligent Automation Solutions</h3>
                 <p className="text-xl text-foreground/70">Transform your artistry into powerful marketing content</p>
@@ -350,7 +347,7 @@ const Index = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="glass-card neon-border rounded-2xl p-6 card-hover"
+                  className="glass-card standard-border rounded-2xl p-6 card-hover"
                 >
                   <div className="flex gap-4">
                     <div className="flex-shrink-0 p-3 rounded-xl bg-gradient-primary">
@@ -393,7 +390,7 @@ const Index = () => {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <Card className="glass-card neon-border card-hover h-full">
+                <Card className="glass-card standard-border card-hover h-full">
                   <CardContent className="p-8 space-y-6">
                     <div className="flex gap-1">
                       {[1, 2, 3, 4, 5].map((star) => (
@@ -436,7 +433,7 @@ const Index = () => {
             <div className="space-y-8">
               <h2 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight">
                 Ready to Transform Your<br />
-                <span className="text-glow">Craft Business?</span>
+                <span className="bg-gradient-primary bg-clip-text text-transparent">Craft Business?</span>
               </h2>
               <p className="text-2xl text-white/70 max-w-3xl mx-auto">
                 Join thousands of Indian artisans who are already using AI to grow their business and reach global audiences
@@ -457,7 +454,7 @@ const Index = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="glass neon-border text-white hover:bg-white/10 text-xl px-12 py-7 h-auto gap-3 font-bold rounded-full"
+                className="glass standard-border text-white hover:bg-white/10 text-xl px-12 py-7 h-auto gap-3 font-bold rounded-full"
                 onClick={scrollToUpload}
               >
                 <Play className="h-6 w-6" />
@@ -476,7 +473,7 @@ const Index = () => {
               <div className="flex items-center gap-3">
                 <div className="flex -space-x-3">
                   {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="w-12 h-12 rounded-full bg-gradient-primary border-2 border-background glow" />
+                    <div key={i} className="w-12 h-12 rounded-full bg-gradient-primary border-2 border-background" />
                   ))}
                 </div>
                 <span className="text-lg font-medium">5,000+ Artisans</span>
