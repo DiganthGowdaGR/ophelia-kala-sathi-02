@@ -181,6 +181,53 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Video Demo Section */}
+      <section className="py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-accent/5 to-background" />
+        
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center space-y-8 max-w-4xl mx-auto mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <Badge className="inline-flex items-center gap-2 px-6 py-3 text-base glass-card standard-border mb-6">
+                <Play className="h-5 w-5 text-primary" />
+                <span className="font-medium">Watch Demo</span>
+              </Badge>
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-tight">
+                See <span className="bg-gradient-primary bg-clip-text text-transparent">How It Works</span>
+              </h2>
+              <p className="text-xl text-foreground/60 mt-6">
+                Watch our platform in action and discover how we can transform your craft business
+              </p>
+            </motion.div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="max-w-4xl mx-auto"
+          >
+            <div className="glass-card standard-border rounded-3xl p-2 shadow-large">
+              <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                <iframe 
+                  src="https://drive.google.com/file/d/1Hqekwb0nyghArF2YJYdHuLF9g__Jg_jl/preview"
+                  className="absolute top-0 left-0 w-full h-full rounded-2xl"
+                  allow="autoplay"
+                  allowFullScreen
+                  title="Platform Demo Video"
+                />
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Capabilities Section */}
       <section className="py-32 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background" />
